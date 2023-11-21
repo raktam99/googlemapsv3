@@ -38,7 +38,7 @@ public class Logic {
                         }.getType();
                         List<Shipment> shipments = gson.fromJson(json, listType);
 
-                        if (shipments == null || shipments.isEmpty()) return;
+                        if (shipments == null || shipments.isEmpty()){ return;}
 
                         System.out.println("From: " + shipments.get(0).getOrigin() + "\nTo:");
                         waypoints.add(shipments.get(0).getOrigin());
@@ -50,8 +50,7 @@ public class Logic {
                     .join();
 
             if (waypoints == null || waypoints.isEmpty()) {
-                MainController.getHelloController().txtOrigin.setText("No scheduled shipments!");
-                MainController.getHelloController().txtWaypoints.setText("");
+                MainController.displayAlert("There are no scheduled shipments!");
                 return;
             }
 
@@ -60,8 +59,7 @@ public class Logic {
                     setText(String.join(";", waypoints.subList(1, waypoints.size())));
         }
         catch (Exception ex){
-            MainController.getHelloController().txtOrigin.setText("Connection error!");
-            MainController.getHelloController().txtWaypoints.setText("");
+            MainController.displayAlert("Failed to connect to server!");
         }
     }
 }
