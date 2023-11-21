@@ -31,6 +31,7 @@ public class Logic {
                 .thenAccept( json -> {
                     Type listType = new TypeToken<List<Shipment>>(){}.getType();
                     List<Shipment> shipments = gson.fromJson(json, listType);
+                    System.out.println("From: " + shipments.get(0).getOrigin() + "\nTo:");
                     for (Shipment sh: shipments) {
                         System.out.println(sh.getDestination() + " " + sh.getShipmentId());
                     }

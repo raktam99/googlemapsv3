@@ -23,7 +23,7 @@ public class HelloController {
     }
     @FXML
     void initialize(){
-        stckPnMaps.getChildren().add(GoogleMapsDisplay.webView);
+        stckPnMaps.getChildren().add(GoogleMapsDisplay.getWebView());
         GoogleMapsDisplay.showMap();
         helloController = this;
     }
