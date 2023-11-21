@@ -1,4 +1,4 @@
-package com.example.googlemapsv3;
+package com.example.googlemapsv3.controller;
 
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
