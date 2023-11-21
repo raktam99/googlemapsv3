@@ -6,8 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class HelloController {
-    private static HelloController helloController;
+public class MainController {
+    private static MainController mainController;
     @FXML
     public TextField txtOrigin;
     @FXML
@@ -22,10 +22,10 @@ public class HelloController {
     void initialize(){
         stckPnMaps.getChildren().add(GoogleMapsDisplay.getWebView());
         GoogleMapsDisplay.showMap();
-        helloController = this;
+        mainController = this;
     }
 
-    public static HelloController getHelloController(){
-        return helloController;
+    public static MainController getHelloController(){
+        return mainController;
     }
 }

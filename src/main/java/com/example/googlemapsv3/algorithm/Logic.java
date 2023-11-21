@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.example.googlemapsv3.controller.HelloController;
+import com.example.googlemapsv3.controller.MainController;
 import com.example.googlemapsv3.models.Shipment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Logic {
-    private static String serverApiKey = "0";
     private static List<String> waypoints = new ArrayList<>();
     public static void getResponse(){
+        waypoints = new ArrayList<>();
+
         HttpClient httpClient = HttpClient.newHttpClient();
 
         Gson gson = new Gson();
@@ -43,8 +44,8 @@ public class Logic {
                 })
                 .join();
 
-        HelloController.getHelloController().txtOrigin.setText(waypoints.get(0));
-        HelloController.getHelloController().txtWaypoints.
+        MainController.getHelloController().txtOrigin.setText(waypoints.get(0));
+        MainController.getHelloController().txtWaypoints.
                 setText(String.join(";", waypoints.subList(1, waypoints.size())));
     }
 }
