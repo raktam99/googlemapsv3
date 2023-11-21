@@ -13,7 +13,7 @@ public class GoogleMapsDisplay {
     }
 
     private static String getHTML(){
-        return GoogleMapsDisplay.class.getResource("/com/example/googlemapsv3/GoogleMapsHTML.html").toString();
+        return GoogleMapsDisplay.class.getResource("/com/example/googlemapsv3/GoogleMapsHTML.html").toExternalForm();
     }
 
     public static WebView getWebView(){

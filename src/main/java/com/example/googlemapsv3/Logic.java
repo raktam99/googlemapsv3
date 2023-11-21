@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -14,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class Logic {
     private static String serverApiKey = "0";
+    private static List<String> waypoints = new ArrayList<>();
     public static void getResponse(){
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -32,10 +34,16 @@ public class Logic {
                     Type listType = new TypeToken<List<Shipment>>(){}.getType();
                     List<Shipment> shipments = gson.fromJson(json, listType);
                     System.out.println("From: " + shipments.get(0).getOrigin() + "\nTo:");
+                    waypoints.add(shipments.get(0).getOrigin());
                     for (Shipment sh: shipments) {
                         System.out.println(sh.getDestination() + " " + sh.getShipmentId());
+                        waypoints.add(sh.getDestination());
                     }
                 })
                 .join();
+
+        HelloController.getHelloController().txtOrigin.setText(waypoints.get(0));
+        HelloController.getHelloController().txtWaypoints.
+                setText(String.join(";", waypoints.subList(1, waypoints.size())));
     }
 }

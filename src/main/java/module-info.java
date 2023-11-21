@@ -5,6 +5,7 @@ module com.example.googlemapsv3 {
     requires java.net.http;
     requires com.google.gson;
     requires javafx.web;
+    requires jdk.jsobject;
 
 
     opens com.example.googlemapsv3 to javafx.fxml;

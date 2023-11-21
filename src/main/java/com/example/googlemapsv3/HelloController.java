@@ -16,6 +16,10 @@ import java.util.List;
 public class HelloController {
     private static HelloController helloController;
     @FXML
+    public TextField txtOrigin;
+    @FXML
+    public TextField txtWaypoints;
+    @FXML
     private StackPane stckPnMaps = new StackPane();
 
     public void calculateOptimalRoute(ActionEvent actionEvent) {
@@ -26,5 +30,9 @@ public class HelloController {
         stckPnMaps.getChildren().add(GoogleMapsDisplay.getWebView());
         GoogleMapsDisplay.showMap();
         helloController = this;
+    }
+
+    public static HelloController getHelloController(){
+        return helloController;
     }
 }
