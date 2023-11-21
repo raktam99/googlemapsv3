@@ -4,9 +4,15 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
 public class GoogleMapsDisplay {
-    private static String googleApiKey = "AIzaSyCEhRZDgXI2xYen-eEvRzOj36Kp8r9HO4o";
-    private static String googleMapsURL = "https://www.google.com/maps/embed/v1/place?key=" +
-            googleApiKey + "&q=YOUR_LOCATION";
-    WebView webView = new WebView();
-    WebEngine webEngine = webView.getEngine();
+    private static String htmlContent = getHTML();
+    public static WebView webView = new WebView();
+    private static WebEngine webEngine = webView.getEngine();
+
+    public static void showMap(){
+        webEngine.load(htmlContent);
+    }
+
+    private static String getHTML(){
+        return GoogleMapsDisplay.class.getResource("/com/example/googlemapsv3/GoogleMapsHTML.html").toString();
+    }
 }

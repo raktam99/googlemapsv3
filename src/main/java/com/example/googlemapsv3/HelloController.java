@@ -9,24 +9,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 
 import java.util.List;
 
 public class HelloController {
-    @FXML
-    public ListView<String> lstVvResponse;
     private static HelloController helloController;
+    @FXML
+    private StackPane stckPnMaps = new StackPane();
 
     public void calculateOptimalRoute(ActionEvent actionEvent) {
         Logic.getResponse();
     }
-
     @FXML
     void initialize(){
+        stckPnMaps.getChildren().add(GoogleMapsDisplay.webView);
+        GoogleMapsDisplay.showMap();
         helloController = this;
-    }
-
-    public static HelloController getHelloController(){
-        return helloController;
     }
 }
