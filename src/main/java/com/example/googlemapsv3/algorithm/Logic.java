@@ -35,6 +35,9 @@ public class Logic {
                 .thenAccept( json -> {
                     Type listType = new TypeToken<List<Shipment>>(){}.getType();
                     List<Shipment> shipments = gson.fromJson(json, listType);
+
+                    if(shipments == null || shipments.isEmpty()) return;
+
                     System.out.println("From: " + shipments.get(0).getOrigin() + "\nTo:");
                     waypoints.add(shipments.get(0).getOrigin());
                     for (Shipment sh: shipments) {
@@ -43,6 +46,12 @@ public class Logic {
                     }
                 })
                 .join();
+
+        if(waypoints == null || waypoints.isEmpty()){
+            MainController.getHelloController().txtOrigin.setText("No scheduled shipments!");
+            MainController.getHelloController().txtWaypoints.setText("");
+            return;
+        }
 
         MainController.getHelloController().txtOrigin.setText(waypoints.get(0));
         MainController.getHelloController().txtWaypoints.
