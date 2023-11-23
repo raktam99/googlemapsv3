@@ -1,7 +1,9 @@
 package com.example.googlemapsv3.algorithm;
 
 import java.lang.reflect.Type;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -10,7 +12,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.example.googlemapsv3.controller.MainController;
+import com.example.googlemapsv3.models.ClientName;
+import com.example.googlemapsv3.models.ClientNameAndPublicKey;
 import com.example.googlemapsv3.models.Shipment;
+import com.example.googlemapsv3.security.Cryptography;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,16 +23,21 @@ public class Logic {
     private static List<String> waypoints = new ArrayList<>();
     public static void getResponse(){
         try {
+            ClientName me = new ClientName();
+
+            me.setClientName(InetAddress.getLocalHost().getHostName());
+
             waypoints = new ArrayList<>();
 
             HttpClient httpClient = HttpClient.newHttpClient();
 
             Gson gson = new Gson();
+            String jsonSend = gson.toJson(me);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/shipments/0/getAllSorted"))
                     .header("Content-Type", "application/json")
-                    .GET()
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonSend))
                     .build();
 
             CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
@@ -61,5 +71,26 @@ public class Logic {
         catch (Exception ex){
             MainController.displayAlert("Failed to connect to server!");
         }
+    }
+
+    public static void sendPublicKey() throws UnknownHostException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        ClientNameAndPublicKey client = new ClientNameAndPublicKey();
+
+        client.setClientName(InetAddress.getLocalHost().getHostName());
+        client.setPublicKey(Cryptography.getPublicKeyRSA());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(client);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(""))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        response.thenApply(HttpResponse::body).thenAccept(System.out::println).join();
     }
 }

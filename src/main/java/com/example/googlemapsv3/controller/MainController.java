@@ -69,6 +69,8 @@ public class MainController {
                 KeyGen.generateAES(0);
                 KeyStorage.setKeys();
 
+                Logic.sendPublicKey();
+
                 //System.out.println(LocalDateTime.now() + ": Master key does not exist yet.");
             }
         } catch (Exception e) {
