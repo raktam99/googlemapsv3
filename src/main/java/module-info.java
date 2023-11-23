@@ -6,6 +6,7 @@ module com.example.googlemapsv3 {
     requires com.google.gson;
     requires javafx.web;
     requires jdk.jsobject;
+    requires java.xml.bind;
 
 
     opens com.example.googlemapsv3 to javafx.fxml;
