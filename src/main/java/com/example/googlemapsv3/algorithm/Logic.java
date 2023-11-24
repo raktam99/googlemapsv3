@@ -35,9 +35,9 @@ public class Logic {
             String jsonSend = gson.toJson(me);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/shipments/0/getAllSorted"))
+                    .uri(URI.create("http://localhost:8080/api/shipments/getAllSorted"))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonSend))
+                    .GET()
                     .build();
 
             CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());

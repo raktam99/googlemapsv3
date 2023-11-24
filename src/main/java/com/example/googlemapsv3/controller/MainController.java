@@ -24,6 +24,8 @@ public class MainController {
     private StackPane stckPnMaps = new StackPane();
 
     public void calculateOptimalRoute(ActionEvent actionEvent) {
+        txtWaypoints.setText("Waypoints");
+        txtOrigin.setText("Origin");
         Logic.getResponse();
     }
     @FXML
@@ -69,7 +71,7 @@ public class MainController {
                 KeyGen.generateAES(0);
                 KeyStorage.setKeys();
 
-                Logic.sendPublicKey();
+                //Logic.sendPublicKey();
 
                 //System.out.println(LocalDateTime.now() + ": Master key does not exist yet.");
             }
