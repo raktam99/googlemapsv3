@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -16,6 +18,8 @@ import com.example.googlemapsv3.models.ClientName;
 import com.example.googlemapsv3.models.ClientNameAndPublicKey;
 import com.example.googlemapsv3.models.Shipment;
 import com.example.googlemapsv3.security.Cryptography;
+import com.example.googlemapsv3.security.KeyGen;
+import com.example.googlemapsv3.security.KeyStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -92,5 +96,30 @@ public class Logic {
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         response.thenApply(HttpResponse::body).thenAccept(System.out::println).join();
+    }
+
+    public static void keyGeneration(){
+        try {
+            if (Files.exists(Paths.get("this_is_definitely_not_the_first_part_of_the_master_key.dat")) &&
+                    Files.exists(Paths.get("this_is_definitely_not_the_second_part_of_the_master_key.dat")) &&
+                    Files.exists(Paths.get("these_are_not_the_keys_you_are_looking_for.dat"))){
+                KeyStorage.getMasterKeyFromFiles();
+                KeyStorage.getKeys();
+                Cryptography.printKeys();
+                //System.out.println(LocalDateTime.now() + ": Master key is forged.");
+            }
+            else {
+                KeyGen.generateRSA();
+                KeyGen.generateAES();
+                KeyGen.generateAES(0);
+                KeyStorage.setKeys();
+
+                //Logic.sendPublicKey();
+
+                //System.out.println(LocalDateTime.now() + ": Master key does not exist yet.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

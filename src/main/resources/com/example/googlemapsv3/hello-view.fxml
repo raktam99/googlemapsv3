@@ -15,5 +15,5 @@
     <StackPane fx:id="stckPnMaps"/>
     <TextField fx:id="txtOrigin" text="Origin"/>
     <TextField fx:id="txtWaypoints" text="Waypoints"/>
-    <Button text="Get List!" onAction="#calculateOptimalRoute"/>
+    <Button text="Get List!" onAction="#sendRequest"/>
 </VBox>
