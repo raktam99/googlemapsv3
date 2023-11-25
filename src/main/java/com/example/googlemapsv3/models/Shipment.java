@@ -1,6 +1,8 @@
 package com.example.googlemapsv3.models;
 
-public class Shipment {
+import java.io.Serializable;
+
+public class Shipment implements Serializable {
 
     private int shipmentId;
     private int customerId;

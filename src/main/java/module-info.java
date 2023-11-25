@@ -7,6 +7,7 @@ module com.example.googlemapsv3 {
     requires javafx.web;
     requires jdk.jsobject;
     requires java.xml.bind;
+    requires spring.core;
 
 
     opens com.example.googlemapsv3 to javafx.fxml;
