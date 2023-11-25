@@ -59,7 +59,6 @@ public class KeyGen {
                 KeyStorage.getMasterKeyFromFiles();
                 KeyStorage.getKeys();
                 Cryptography.printKeys();
-                //System.out.println(LocalDateTime.now() + ": Master key is forged.");
             }
             else {
                 KeyGen.generateRSA();
@@ -68,8 +67,6 @@ public class KeyGen {
                 KeyStorage.setKeys();
 
                 //Logic.sendPublicKey();
-
-                //System.out.println(LocalDateTime.now() + ": Master key does not exist yet.");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -25,10 +25,6 @@ public class Logic {
     public static List<Shipment> shipments;
     public static void getResponse(){
         try {
-            ClientName me = new ClientName();
-
-            me.setClientName(InetAddress.getLocalHost().getHostName());
-
             waypoints = new ArrayList<>();
 
             shipments = new ArrayList<>();
@@ -36,7 +32,6 @@ public class Logic {
             HttpClient httpClient = HttpClient.newHttpClient();
 
             Gson gson = new Gson();
-            String jsonSend = gson.toJson(me);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/shipments/getAllSorted"))
@@ -73,7 +68,7 @@ public class Logic {
                     setText(String.join(";", waypoints.subList(1, waypoints.size())));
         }
         catch (Exception ex){
-            MainController.displayAlert("Failed to connect to server!");
+            MainController.displayAlert("Failed to retrieve data from server!");
         }
     }
 
