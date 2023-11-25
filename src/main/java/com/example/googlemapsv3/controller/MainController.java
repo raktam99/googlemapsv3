@@ -1,17 +1,16 @@
 package com.example.googlemapsv3.controller;
 
 import com.example.googlemapsv3.algorithm.Logic;
+import com.example.googlemapsv3.models.Shipment;
 import com.example.googlemapsv3.security.Cryptography;
-import com.example.googlemapsv3.security.KeyGen;
-import com.example.googlemapsv3.security.KeyStorage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
+import java.util.List;
 
 public class MainController {
     private static MainController mainController;
@@ -22,10 +21,12 @@ public class MainController {
     @FXML
     private StackPane stckPnMaps = new StackPane();
 
-    public void sendRequest(ActionEvent actionEvent) {
+    public void sendRequest(ActionEvent actionEvent) throws Exception {
         txtWaypoints.setText("Waypoints");
         txtOrigin.setText("Origin");
         Logic.getResponse();
+        List<byte[]> encrypted = Cryptography.encryptShipments(Logic.shipments);
+        List<Shipment> decrypted = Cryptography.decryptShipments(encrypted);
     }
     @FXML
     void initialize(){

@@ -1,15 +1,16 @@
 package com.example.googlemapsv3.security;
 
+import com.example.googlemapsv3.models.Shipment;
+import org.springframework.util.SerializationUtils;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
-//import javax.xml.bind.DatatypeConverter;
 
 public class Cryptography {
 
@@ -58,56 +59,36 @@ public class Cryptography {
         return publicKeyRSA;
     }
 
-
-    public static String encryptDataInRest(String data) throws Exception {
-        data = DatatypeConverter.printBase64Binary(data.getBytes());
-
-        byte[] keyBytes = Base64.getDecoder().decode(keyForRestAES);
-        byte[] dataBytes = DatatypeConverter.parseBase64Binary(data);
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
-
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedBytes = cipher.doFinal(dataBytes);
-
-        return Base64.getEncoder().encodeToString(encryptedBytes);
-    }
-
-    public static String decryptDataInRest(String data) throws Exception {
-        byte[] keyBytes = Base64.getDecoder().decode(keyForRestAES);
-        byte[] dataBytes = DatatypeConverter.parseBase64Binary(data);
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
-
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] decryptedBytes = cipher.doFinal(dataBytes);
-
-        data = Base64.getEncoder().encodeToString(decryptedBytes);
-
-        return new String(DatatypeConverter.parseBase64Binary(data));
-    }
-
-    public static String encryptDataInTransit(String data) throws Exception {
-        data = DatatypeConverter.printBase64Binary(data.getBytes());
-
-        byte[] keyBytes = Base64.getDecoder().decode(publicKeyRSA);
+    public static List<byte[]> encryptShipments(List<Shipment> shipments) throws Exception {
+        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getPublicKeyRSA());
 
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
-        byte[] dataBytes = DatatypeConverter.parseBase64Binary(data);
+        List<byte[]> list = new ArrayList<>();
 
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        byte[] encryptedBytes = cipher.doFinal(dataBytes);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        for (Shipment sh: shipments) {
+            list.add(SerializationUtils.serialize(sh));
+        }
+
+        for (int i = 0; i < list.size(); ++i){
+            byte[] c = cipher.doFinal(list.get(i));
+            list.set(i, c);
+        }
+
+        System.out.println("Encryption successful!");
+
+        return list;
     }
 
-    public static String decryptDataInTransit(String data) throws Exception {
-        byte[] keyBytes = Base64.getDecoder().decode(privateKeyRSA);
-        byte[] dataBytes = DatatypeConverter.parseBase64Binary(data);
+    public static List<Shipment> decryptShipments(List<byte[]> data) throws Exception {
+        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getPrivateKeyRSA());
+
+        List<Shipment> list = new ArrayList<>();
 
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -115,11 +96,19 @@ public class Cryptography {
 
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        byte[] decryptedBytes = cipher.doFinal(dataBytes);
 
-        data = Base64.getEncoder().encodeToString(decryptedBytes);
+        for (int i = 0; i < data.size(); ++i){
+            byte[] c = cipher.doFinal(data.get(i));
+            data.set(i, c);
+        }
 
-        return new String(DatatypeConverter.parseBase64Binary(data));
+        for (byte[] b:data) {
+            list.add((Shipment) SerializationUtils.deserialize(b));
+        }
+
+        System.out.println("Decryption successful!");
+
+        return list;
     }
 
     public static byte[] encryptKeysAsByteArrayToRest(String data) throws Exception {
@@ -131,21 +120,6 @@ public class Cryptography {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
         return cipher.doFinal(encryptedKey);
-    }
-
-    public static String decryptKeyFromByteArrayToRest(String key) throws Exception {
-
-        // "keyBytes" is for the master key and "encryptedKey" is the key that is going to be decrypted.
-        byte[] keyBytes = Base64.getDecoder().decode(masterKeyAES);
-        byte[] encryptedKey = Base64.getDecoder().decode(key);
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
-
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
-        byte[] decryptedKey = cipher.doFinal(encryptedKey);
-
-        return Base64.getEncoder().encodeToString(decryptedKey);
     }
 
     public static String decryptKeyFromByteArrayToRest(byte[] encryptedKey) throws Exception {
@@ -160,22 +134,6 @@ public class Cryptography {
         return Base64.getEncoder().encodeToString(decryptedKey);
     }
 
-    public static String[] splitAESKeyForStoringAsStringArray() {
-        byte[] aesInBytes = Base64.getDecoder().decode(keyForRestAES);
-        String[] splitAES = new String[2];
-        splitAES[0] = "";
-        splitAES[1] = "";
-
-        for(int i = 0; i < aesInBytes.length; ++i) {
-            byte[] byArr = new byte[]{aesInBytes[i]};
-            if(i % 2 != 0) {
-                splitAES[0] += Base64.getEncoder().encodeToString(byArr);
-            } else {
-                splitAES[1] += Base64.getEncoder().encodeToString(byArr);
-            }
-        }
-        return splitAES;
-    }
     public static List<byte[]> splitAESKeyForStoringAsByteArrays() {
         byte[] aesInBytes = Base64.getDecoder().decode(masterKeyAES);
         String[] splitAES = new String[2];

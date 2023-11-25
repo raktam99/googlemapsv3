@@ -1,7 +1,6 @@
 package com.example.googlemapsv3;
 
-import com.example.googlemapsv3.algorithm.Logic;
-import com.example.googlemapsv3.controller.MainController;
+import com.example.googlemapsv3.security.KeyGen;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,7 +17,7 @@ public class Main extends Application {
         stage.setTitle("Map Application!");
         stage.setScene(scene);
         stage.show();
-        Logic.keyGeneration();
+        KeyGen.keyGeneration();
     }
 
     public static void main(String[] args) {

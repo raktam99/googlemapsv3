@@ -2,10 +2,10 @@ package com.example.googlemapsv3.security;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
 
 public class KeyGen {
 
@@ -49,5 +49,30 @@ public class KeyGen {
         Cryptography.setMasterAESKey(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
         String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
         System.out.println(encodedKey);
+    }
+
+    public static void keyGeneration(){
+        try {
+            if (Files.exists(Paths.get("this_is_definitely_not_the_first_part_of_the_master_key.dat")) &&
+                    Files.exists(Paths.get("this_is_definitely_not_the_second_part_of_the_master_key.dat")) &&
+                    Files.exists(Paths.get("these_are_not_the_keys_you_are_looking_for.dat"))){
+                KeyStorage.getMasterKeyFromFiles();
+                KeyStorage.getKeys();
+                Cryptography.printKeys();
+                //System.out.println(LocalDateTime.now() + ": Master key is forged.");
+            }
+            else {
+                KeyGen.generateRSA();
+                KeyGen.generateAES();
+                KeyGen.generateAES(0);
+                KeyStorage.setKeys();
+
+                //Logic.sendPublicKey();
+
+                //System.out.println(LocalDateTime.now() + ": Master key does not exist yet.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
