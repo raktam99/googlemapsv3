@@ -39,7 +39,7 @@ public class Logic {
             String jsonSend = gson.toJson(me);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/shipments/getAll"))
+                    .uri(URI.create("http://localhost:8080/api/shipments/getAllSorted"))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();

@@ -4,6 +4,7 @@ import com.example.googlemapsv3.models.Shipment;
 import org.springframework.util.SerializationUtils;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -60,16 +61,14 @@ public class Cryptography {
     }
 
     public static List<byte[]> encryptShipments(List<Shipment> shipments) throws Exception {
-        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getPublicKeyRSA());
+        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getAESKey());
 
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(keySpec);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
 
         List<byte[]> list = new ArrayList<>();
 
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
         for (Shipment sh: shipments) {
             list.add(SerializationUtils.serialize(sh));
@@ -86,16 +85,14 @@ public class Cryptography {
     }
 
     public static List<Shipment> decryptShipments(List<byte[]> data) throws Exception {
-        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getPrivateKeyRSA());
+        byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getAESKey());
 
         List<Shipment> list = new ArrayList<>();
 
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
 
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
         for (int i = 0; i < data.size(); ++i){
             byte[] c = cipher.doFinal(data.get(i));
