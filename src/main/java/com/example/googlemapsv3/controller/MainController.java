@@ -25,8 +25,10 @@ public class MainController {
         txtWaypoints.setText("Waypoints");
         txtOrigin.setText("Origin");
         Logic.getResponse();
-        List<byte[]> encrypted = Cryptography.encryptShipments(Logic.shipments);
-        List<Shipment> decrypted = Cryptography.decryptShipments(encrypted);
+        if(Logic.shipments != null){
+            List<byte[]> encrypted = Cryptography.encryptShipments(Logic.shipments);
+            List<Shipment> decrypted = Cryptography.decryptShipments(encrypted);
+        }
     }
     @FXML
     void initialize(){
