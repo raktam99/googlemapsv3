@@ -21,8 +21,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class ServerConnection {
     private static List<String> waypoints = new ArrayList<>();
-
     private static List<Shipment> shipments;
+    private static String serverURL = "";
+
     public static List<Shipment> getShipments(){
         return shipments;
     }
@@ -37,7 +38,7 @@ public class ServerConnection {
             Gson gson = new Gson();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/shipments/getAllSorted"))
+                    .uri(URI.create(serverURL + "/api/shipments/getAllSorted"))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -67,7 +68,8 @@ public class ServerConnection {
 
 
         catch (Exception ex){
-            if(ex.getMessage().startsWith("java.lang.NullPointerException")){
+            if(ex.getMessage().startsWith("java.lang.NullPointerException") ||
+            ex.getMessage().startsWith("com.google.gson.JsonSyntaxException")){
                 MainController.displayAlert("There are no scheduled shipments!");
             }
             else {
