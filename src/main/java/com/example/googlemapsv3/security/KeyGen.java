@@ -2,6 +2,7 @@ package com.example.googlemapsv3.security;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -9,6 +10,7 @@ import java.util.Base64;
 
 public class KeyGen {
 
+    //Generates RSA keypair
     public static void generateRSA() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
@@ -25,11 +27,9 @@ public class KeyGen {
 
         Cryptography.setPrivateKeyRSA(encodedPrivateKey);
         Cryptography.setPublicKeyRSA(encodedPublicKey);
-
-        System.out.println("Public key: " + encodedPublicKey);
-        System.out.println("Private key: " + encodedPrivateKey);
     }
 
+    //Generates AES key
     public static void generateAES() throws NoSuchAlgorithmException {
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(256);
@@ -37,9 +37,9 @@ public class KeyGen {
         SecretKey secretKey = keyGen.generateKey();
         Cryptography.setAESKey(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
         String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        System.out.println(encodedKey);
     }
 
+    //Generates master AES key
     public static void generateAES(int i) throws NoSuchAlgorithmException {
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(256);
@@ -48,7 +48,6 @@ public class KeyGen {
 
         Cryptography.setMasterAESKey(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
         String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        System.out.println(encodedKey);
     }
 
     public static void keyGeneration(){
@@ -58,13 +57,14 @@ public class KeyGen {
                     Files.exists(Paths.get("these_are_not_the_keys_you_are_looking_for.dat"))){
                 KeyStorage.getMasterKeyFromFiles();
                 KeyStorage.getKeys();
-                Cryptography.printKeys();
+                System.out.println("Got keys from file!");
             }
             else {
                 KeyGen.generateRSA();
                 KeyGen.generateAES();
                 KeyGen.generateAES(0);
                 KeyStorage.setKeys();
+                System.out.println("Generated keys!");
 
                 //Logic.sendPublicKey();
             }

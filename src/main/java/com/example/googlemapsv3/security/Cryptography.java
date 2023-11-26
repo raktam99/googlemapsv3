@@ -1,6 +1,7 @@
 package com.example.googlemapsv3.security;
 
 import com.example.googlemapsv3.models.Shipment;
+
 import org.springframework.util.SerializationUtils;
 
 import javax.crypto.Cipher;
@@ -9,25 +10,12 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 
 public class Cryptography {
-
-    /**
-     * Key for encrypt and decrypt data in database
-     */
     private static String keyForRestAES;
 
-    /**
-     * Key for encrypt and decrypt keys in files
-     */
     private static String masterKeyAES;
 
-    /**
-     * Public RSA key for the data that is received
-     * */
     private static String privateKeyRSA;
 
-    /**
-     * Public RSA key for the "in transit" data
-     * */
     private static String publicKeyRSA;
 
     public static void setMasterAESKey(String key) {
@@ -55,6 +43,7 @@ public class Cryptography {
         return publicKeyRSA;
     }
 
+    //Converts Shipments objects to byte arrays, then encrypts them using an AES key
     public static List<byte[]> encryptShipments(List<Shipment> shipments) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getAESKey());
 
@@ -79,6 +68,7 @@ public class Cryptography {
         return list;
     }
 
+    //Converts byte arrays to Shipment objects, then decrypts them using an AES key
     public static List<Shipment> decryptShipments(List<byte[]> data) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(Cryptography.getAESKey());
 
@@ -103,6 +93,7 @@ public class Cryptography {
         return list;
     }
 
+    //Encrypts a given RSA key using AES
     public static byte[] encryptKeysAsByteArrayToRest(String data) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(masterKeyAES);
         byte[] encryptedKey = Base64.getDecoder().decode(data);
@@ -114,6 +105,7 @@ public class Cryptography {
         return cipher.doFinal(encryptedKey);
     }
 
+    //Decrypts a given RSA key using AES
     public static String decryptKeyFromByteArrayToRest(byte[] encryptedKey) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(masterKeyAES);
         SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
@@ -126,6 +118,7 @@ public class Cryptography {
         return Base64.getEncoder().encodeToString(decryptedKey);
     }
 
+    //Splits the master key to 2 separate parts
     public static List<byte[]> splitAESKeyForStoringAsByteArrays() {
         byte[] aesInBytes = Base64.getDecoder().decode(masterKeyAES);
         String[] splitAES = new String[2];
@@ -155,6 +148,7 @@ public class Cryptography {
         return splitKeyList;
     }
 
+    //Makes a key from 2 parts
     public static void forgeSplitKey(byte[] first, byte[] second) {
 
         // converting the byte[] arrays into Byte[] arrays, so they could be stored in a queue

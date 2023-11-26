@@ -8,7 +8,7 @@ public class GoogleMapsDisplay {
     private static WebView webView = new WebView();
     private static WebEngine webEngine = webView.getEngine();
 
-    public static void showMap(){
+    public static void loadMap(){
         webEngine.load(htmlContent);
     }
 

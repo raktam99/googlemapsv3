@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.List;
 
 public class KeyStorage {
+
+    //Gets keys from file
     public static void getKeys() throws Exception {
         String decryptedKey;
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader("these_are_not_the_keys_you_are_looking_for.dat"))){
@@ -49,6 +51,7 @@ public class KeyStorage {
         }
     }
 
+    //Gets master key from files
     public static void getMasterKeyFromFiles() throws Exception {
 
         byte[] firstPart;
@@ -65,6 +68,7 @@ public class KeyStorage {
         Cryptography.forgeSplitKey(firstPart, secondPart);
     }
 
+    //Saves keys to files
     public static void setKeys() throws Exception {
         byte[] encryptedPrivateKey = Cryptography.encryptKeysAsByteArrayToRest(Cryptography.getPrivateKeyRSA());
         byte[] encryptedPublicKey = Cryptography.encryptKeysAsByteArrayToRest(Cryptography.getPublicKeyRSA());
