@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ServerConnection {
-    private static List<String> waypoints = new ArrayList<>();
+    private static List<String> waypoints;
     private static List<Shipment> shipments;
     private static String serverURL = "";
 
